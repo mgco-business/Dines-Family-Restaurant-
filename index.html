@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dine's Family Restaurant &amp; Deli — Oshawa's All-Day Breakfast</title>
+<meta name="description" content="Dine's Family Restaurant & Deli — Oshawa's home of all-day breakfast & the famous Steak on a Kaiser. Grilled, never deep-fried. Browse the menu & reserve online." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<!-- Vercel Web Analytics — real visitor tracking -->
+<script defer src="/_vercel/insights/script.js"></script>
+<!-- QR code generator for the Smart Menu (AR) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --red:#C8102E;          /* diner red */
+  --red-deep:#9C0A22;
+  --red-soft:#E23B52;
+  --cream:#F7EFDD;        /* warm cream */
+  --cream-2:#EFE4CB;
+  --paper:#FCF7EC;
+  --char:#1A1715;         /* charcoal/near-black */
+  --char-2:#2C2825;
+  --ink:#211D1A;
+  --muted:#6C6055;
+  --gold:#E8B84B;         /* small star/highlight accent */
+  --line:rgba(26,23,21,.14);
+  --steel:#D8D2C4;
+  --shadow:0 26px 60px -22px rgba(26,23,21,.45);
+  --shadow-sm:0 14px 34px -18px rgba(26,23,21,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Archivo',system-ui,sans-serif;
+  background:var(--cream);color:var(--ink);line-height:1.6;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+/* film grain + vignette */
+body::before{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+h1,h2,h3,.anton{font-family:'Anton',Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em;line-height:.96}
+.hand{font-family:'Caveat',cursive;font-weight:700}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.container{width:min(1200px,92vw);margin-inline:auto}
+
+/* scroll progress */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--red);z-index:9998;transition:width .1s linear}
+
+.eyebrow{display:inline-flex;align-items:center;gap:.55rem;font-family:'Archivo';font-weight:800;
+  font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--red)}
+.eyebrow::before{content:"★";color:var(--gold);font-size:.8rem;letter-spacing:0}
+
+.btn{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;border:none;position:relative;overflow:hidden;
+  font-family:'Archivo';font-weight:800;font-size:.86rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:1rem 1.8rem;border-radius:4px;transition:.3s cubic-bezier(.2,.8,.2,1)}
+.btn::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);transition:.6s;transform:skewX(-18deg)}
+.btn:hover::after{left:130%}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 12px 26px -12px rgba(200,16,46,.7)}
+.btn-red:hover{background:var(--red-deep);transform:translateY(-2px)}
+.btn-dark{background:var(--char);color:var(--cream)}
+.btn-dark:hover{transform:translateY(-2px);background:#000}
+.btn-out{background:transparent;border:2px solid currentColor}
+.btn-out:hover{transform:translateY(-2px)}
+
+/* ---------- NAV ---------- */
+header.nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem clamp(1rem,4vw,2.6rem);transition:.4s ease}
+header.nav.scrolled{background:rgba(247,239,221,.9);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--line);padding-block:.6rem}
+.brand{display:flex;align-items:center;gap:.7rem}
+.brand .mark{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none;
+  background:var(--red);color:#fff;font-family:'Anton';font-size:1.5rem;border:2px solid var(--char);
+  box-shadow:0 0 0 2px var(--cream),0 6px 14px -6px rgba(0,0,0,.5)}
+.brand b{font-family:'Anton';font-size:1.5rem;color:var(--char);letter-spacing:.02em;line-height:1}
+.brand small{display:block;font-family:'Archivo';font-weight:800;font-size:.54rem;letter-spacing:.28em;color:var(--red);text-transform:uppercase;margin-top:2px}
+nav.links{display:flex;align-items:center;gap:1.9rem}
+nav.links a{font-weight:700;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;color:var(--char-2);position:relative}
+nav.links a::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--red);transition:.3s}
+nav.links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:1.1rem}
+.nav-status{display:flex;align-items:center;gap:.5rem;font-weight:700;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;color:var(--char-2)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);position:relative;flex:none}
+.dot.open{background:#2faa55}
+.dot.open::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #2faa55;opacity:.5;animation:pulse 2s infinite}
+.dot.closed{background:var(--red)}
+@keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.3);opacity:0}}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px}
+.burger span{width:26px;height:2.5px;background:var(--char);display:block;transition:.3s}
+
+/* ---------- food illustration fallbacks (always render) ---------- */
+.ph{position:relative;overflow:hidden;background:var(--cream-2)}
+.ph .fb{position:absolute;inset:0;display:grid;place-items:center;background:
+  radial-gradient(120% 120% at 30% 20%,var(--cream) 0%,var(--cream-2) 55%,var(--steel) 120%)}
+.ph .fb svg{width:42%;max-width:150px;opacity:.85}
+.ph .fb::after{content:attr(data-label);position:absolute;bottom:14px;left:0;right:0;text-align:center;
+  font-family:'Archivo';font-weight:800;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:7rem 0 3rem;overflow:hidden;
+  background:radial-gradient(130% 90% at 80% 0%,#241f1c 0%,var(--char) 60%)}
+.hero::before{content:"";position:absolute;inset:0;opacity:.5;
+  background-image:radial-gradient(rgba(247,239,221,.07) 1px,transparent 1px);background-size:22px 22px}
+.hero .container{display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;position:relative;z-index:2}
+.hero-copy{color:var(--cream)}
+.hero-badge{display:inline-flex;align-items:center;gap:.6rem;border:1px solid rgba(247,239,221,.3);border-radius:100px;
+  padding:.5rem 1rem;font-family:'Archivo';font-weight:800;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);margin-bottom:1.6rem}
+.hero-badge i{color:var(--gold);font-style:normal}
+.hero h1{font-size:clamp(3.2rem,7.4vw,6rem);color:var(--cream)}
+.hero h1 .red{color:var(--red-soft);-webkit-text-stroke:0}
+.hero h1 .out{color:transparent;-webkit-text-stroke:2px var(--cream)}
+.hero .sub{font-family:'Caveat';font-weight:700;font-size:1.7rem;color:var(--gold);margin:.4rem 0 .2rem;display:block;text-transform:none}
+.hero p.lede{font-size:1.08rem;color:rgba(247,239,221,.82);max-width:480px;margin:1.3rem 0 2rem}
+.hero-actions{display:flex;gap:.9rem;flex-wrap:wrap}
+.hero-stats{display:flex;gap:2.2rem;margin-top:2.6rem;flex-wrap:wrap}
+.hero-stats .s strong{font-family:'Anton';font-size:2.1rem;color:var(--red-soft);display:block;line-height:1}
+.hero-stats .s span{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,239,221,.6)}
+/* hero visual */
+.hero-visual{position:relative;height:min(76vh,560px)}
+.hero-frame{position:absolute;inset:0;border-radius:10px;overflow:hidden;border:8px solid var(--cream);box-shadow:var(--shadow);transform:rotate(1.5deg)}
+.hero-frame .ph{height:100%}
+.hero-frame .ph img{animation:kb 20s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1.06)}to{transform:scale(1.18)}}
+.seal{position:absolute;width:140px;height:140px;left:-46px;bottom:-30px;z-index:5;animation:spin 24s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tape{position:absolute;top:-18px;right:30px;z-index:6;background:var(--gold);color:var(--char);font-family:'Anton';
+  font-size:.9rem;padding:.5rem 1rem;transform:rotate(4deg);box-shadow:var(--shadow-sm);text-transform:uppercase;letter-spacing:.04em}
+.scroll-cue{position:absolute;bottom:1.4rem;left:50%;transform:translateX(-50%);z-index:3;color:rgba(247,239,221,.6);
+  font-family:'Archivo';font-weight:700;font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.scroll-cue .ln{width:1px;height:36px;background:linear-gradient(rgba(247,239,221,.6),transparent);animation:drop 2s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}50.1%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- MARQUEE ---------- */
+.strip{background:var(--red);color:#fff;overflow:hidden;padding:.8rem 0;border-block:3px solid var(--char)}
+.strip-track{display:inline-flex;white-space:nowrap;animation:marq 28s linear infinite}
+.strip-track span{font-family:'Anton';font-size:1.15rem;letter-spacing:.04em;display:inline-flex;align-items:center;text-transform:uppercase}
+.strip-track span::after{content:"★";margin:0 1.6rem;color:var(--gold)}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* ---------- SECTIONS ---------- */
+section{padding:clamp(4.5rem,9vw,7.5rem) 0;position:relative}
+.sec-head{max-width:660px;margin-bottom:3rem}
+.sec-head h2{font-size:clamp(2.4rem,5.2vw,4rem);color:var(--char);margin:.9rem 0 .7rem}
+.sec-head h2 em{font-style:normal;color:var(--red)}
+.sec-head p{color:var(--muted);font-size:1.05rem;max-width:520px}
+.reveal{opacity:0;transform:translateY(40px);transition:.9s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* signature dishes */
+.signature{background:var(--paper);border-block:3px solid var(--char)}
+.sig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.dish{background:var(--cream);border:2px solid var(--char);border-radius:8px;overflow:hidden;transition:.45s cubic-bezier(.2,.8,.2,1);box-shadow:6px 6px 0 var(--char)}
+.dish:hover{transform:translate(-3px,-3px);box-shadow:10px 10px 0 var(--red)}
+.dish .ph{height:280px}
+.dish .ph img{transition:.7s ease}
+.dish:hover .ph img{transform:scale(1.1)}
+.dish .stamp{position:absolute;top:1rem;left:1rem;z-index:3;background:var(--red);color:#fff;font-family:'Anton';
+  font-size:.7rem;letter-spacing:.08em;padding:.4rem .8rem;border-radius:3px;text-transform:uppercase}
+.dish .body{padding:1.4rem 1.5rem 1.7rem;position:relative}
+.dish h3{font-size:1.5rem;color:var(--char);margin-bottom:.5rem}
+.dish p{color:var(--muted);font-size:.9rem}
+.dish .price{position:absolute;top:-1.6rem;right:1.2rem;width:62px;height:62px;border-radius:50%;background:var(--char);color:var(--cream);
+  display:grid;place-items:center;font-family:'Anton';font-size:1.05rem;border:2px solid var(--cream);box-shadow:var(--shadow-sm)}
+
+/* ---------- MENU ---------- */
+.menu-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1.4rem;margin-bottom:2rem}
+.menu-flag{display:inline-flex;align-items:center;gap:.6rem;background:var(--char);color:var(--cream);border-radius:4px;
+  padding:.7rem 1.1rem;font-family:'Archivo';font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.menu-flag b{color:var(--gold)}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.4rem;border-bottom:2px solid var(--line);padding-bottom:1rem;position:relative}
+.tab{padding:.6rem 1.2rem;border:2px solid transparent;background:transparent;cursor:pointer;border-radius:4px;
+  font-family:'Archivo';font-weight:800;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);transition:.25s}
+.tab:hover{color:var(--char)}
+.tab.active{background:var(--red);color:#fff}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:.2rem 3.5rem}
+.m-item{display:flex;gap:.8rem;align-items:flex-start;padding:1.1rem 0;border-bottom:2px dotted var(--line);animation:fadein .5s ease both}
+@keyframes fadein{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.m-main{flex:1}
+.m-title{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.m-title h4{font-family:'Archivo';font-weight:800;font-size:1.08rem;color:var(--char);letter-spacing:.01em}
+.m-badge{font-family:'Archivo';font-size:.56rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .5rem;border-radius:3px}
+.b-sig{background:var(--red);color:#fff}
+.b-veg{background:#3f7d4f;color:#fff}
+.b-grill{background:var(--gold);color:var(--char)}
+.m-desc{color:var(--muted);font-size:.86rem;margin-top:.15rem;padding-right:.5rem}
+.m-dots{flex:1;border-bottom:2px dotted var(--line);transform:translateY(-7px);min-width:12px}
+.m-price{font-family:'Anton';font-size:1.15rem;color:var(--red);white-space:nowrap}
+
+/* ---------- ABOUT ---------- */
+.about{background:var(--char);color:var(--cream);overflow:hidden}
+.about .container{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.about h2{font-size:clamp(2.2rem,4.6vw,3.6rem);color:var(--cream);margin:1rem 0 1.3rem}
+.about h2 em{font-style:normal;color:var(--red-soft)}
+.about p{color:rgba(247,239,221,.78);margin-bottom:1.1rem;max-width:480px}
+.about .eyebrow{color:var(--gold)}
+.about .eyebrow::before{color:var(--red-soft)}
+.about-stats{display:flex;gap:2.4rem;margin-top:1.8rem;flex-wrap:wrap}
+.about-stats strong{font-family:'Anton';font-size:2.4rem;color:var(--gold);display:block;line-height:1}
+.about-stats span{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(247,239,221,.6)}
+.about-visual{position:relative;height:460px}
+.about-visual .ph{position:absolute;border-radius:8px;border:7px solid var(--cream);box-shadow:var(--shadow)}
+.av1{width:72%;height:72%;top:0;right:0}
+.av2{width:50%;height:50%;bottom:0;left:0;z-index:2;border-color:var(--char);outline:3px solid var(--cream)}
+.av-badge{position:absolute;bottom:6%;right:-3%;z-index:4;background:var(--red);color:#fff;border-radius:8px;
+  padding:.9rem 1.1rem;text-align:center;box-shadow:var(--shadow);border:2px solid var(--cream);transform:rotate(-4deg)}
+.av-badge b{font-family:'Anton';font-size:1.5rem;display:block}
+.av-badge span{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase}
+
+/* ---------- RESERVE ---------- */
+.reserve{background:var(--paper);border-block:3px solid var(--char)}
+.reserve .container{display:grid;grid-template-columns:1fr 1.05fr;gap:4rem;align-items:center}
+.reserve-copy h2{font-size:clamp(2.2rem,4.6vw,3.6rem);color:var(--char);margin:1rem 0 1rem}
+.reserve-copy h2 em{font-style:normal;color:var(--red)}
+.reserve-copy p{color:var(--muted);margin-bottom:1.6rem;max-width:440px}
+.frow{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem}
+.frow .ic{width:42px;height:42px;border-radius:8px;background:var(--char);color:var(--cream);display:grid;place-items:center;flex:none;font-size:1.1rem}
+.frow b{display:block;font-weight:800;color:var(--char)}
+.frow span{color:var(--muted);font-size:.88rem}
+/* booking ticket */
+.ticket{background:var(--cream);border:2px solid var(--char);border-radius:10px;box-shadow:8px 8px 0 var(--red);position:relative;overflow:hidden}
+.ticket-head{background:var(--char);color:var(--cream);padding:1.3rem 1.8rem;display:flex;justify-content:space-between;align-items:center}
+.ticket-head h3{font-size:1.5rem;color:var(--cream)}
+.ticket-head .chip{font-family:'Archivo';font-weight:800;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--char);background:var(--gold);padding:.3rem .6rem;border-radius:3px}
+.ticket-body{padding:1.8rem}
+.ticket-body .sub{color:var(--muted);font-size:.88rem;margin-bottom:1.4rem}
+.field{margin-bottom:1.05rem}
+.field label{display:block;font-family:'Archivo';font-weight:800;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--char-2);margin-bottom:.45rem}
+.field input,.field select{width:100%;padding:.85rem .95rem;border:2px solid var(--line);border-radius:6px;font-family:'Archivo';font-weight:600;font-size:.95rem;color:var(--ink);background:var(--paper);transition:.2s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--red);background:#fff;box-shadow:0 0 0 4px rgba(200,16,46,.12)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.party-pills{display:flex;gap:.45rem;flex-wrap:wrap}
+.party-pills button{flex:1;min-width:40px;padding:.65rem 0;border:2px solid var(--line);background:var(--paper);border-radius:6px;cursor:pointer;font-family:'Archivo';font-weight:800;color:var(--char-2);transition:.2s}
+.party-pills button.sel{background:var(--char);color:var(--cream);border-color:var(--char)}
+.ticket-body .btn-red{width:100%;justify-content:center;margin-top:.5rem}
+/* confirmation */
+.confirm{padding:.5rem 0;animation:fadein .5s ease}
+.confirm .check{width:72px;height:72px;border-radius:50%;background:rgba(47,170,85,.14);color:#2faa55;display:grid;place-items:center;margin:0 auto 1rem;font-size:2.1rem;animation:pop .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.confirm h3{text-align:center;color:var(--char);margin-bottom:.4rem}
+.confirm>p{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:1.2rem}
+.receipt{border:2px dashed var(--line);border-radius:8px;padding:1.1rem 1.3rem;background:var(--paper)}
+.receipt .rrow{display:flex;justify-content:space-between;padding:.4rem 0;font-size:.92rem;border-bottom:1px dotted var(--line)}
+.receipt .rrow:last-child{border:none}
+.receipt .rrow span:first-child{color:var(--muted);text-transform:uppercase;font-size:.72rem;letter-spacing:.08em;font-weight:800;align-self:center}
+.receipt .rrow span:last-child{font-weight:700;color:var(--char)}
+.receipt .code{font-family:'Anton';color:var(--red);font-size:1.1rem}
+
+/* ---------- GALLERY ---------- */
+.gallery{background:var(--cream)}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:190px;gap:.9rem}
+.gallery-grid .ph{border-radius:8px;border:2px solid var(--char)}
+.gallery-grid .ph img{transition:.7s ease}
+.gallery-grid .ph:hover img{transform:scale(1.12)}
+.g-tall{grid-row:span 2}
+.g-wide{grid-column:span 2}
+
+/* ---------- VISIT ---------- */
+.visit{background:var(--char);color:var(--cream)}
+.visit .container{display:grid;grid-template-columns:1fr 1.1fr;border:2px solid var(--cream);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.visit-info{padding:clamp(2rem,4vw,3.2rem);background:var(--char-2)}
+.visit-info .eyebrow{color:var(--gold)}
+.visit-info .eyebrow::before{color:var(--red-soft)}
+.visit-info h2{color:var(--cream);font-size:clamp(2rem,4vw,3rem);margin:.9rem 0 1.6rem}
+.vline{display:flex;gap:1rem;align-items:flex-start;padding:1rem 0;border-top:1px solid rgba(247,239,221,.14)}
+.vline:first-of-type{border:none}
+.vline .ic{font-size:1.2rem;width:28px;flex:none}
+.vline b{display:block;color:var(--cream);font-weight:800;margin-bottom:.1rem}
+.vline span,.vline a{color:rgba(247,239,221,.72);font-size:.92rem}
+.vline a:hover{color:var(--gold)}
+.hnow{margin-top:.45rem;display:inline-flex;align-items:center;gap:.5rem;font-weight:800;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;padding:.35rem .8rem;border-radius:100px;background:rgba(247,239,221,.1)}
+.visit-map{min-height:420px;background:var(--cream-2)}
+.visit-map iframe{width:100%;height:100%;border:0;filter:grayscale(.25) contrast(1.05)}
+
+/* ---------- FOOTER ---------- */
+footer{background:#100E0D;color:rgba(247,239,221,.66);padding:3.4rem 0 1.8rem}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:2.4rem;margin-bottom:2.4rem}
+footer .brand b{color:var(--cream)}
+footer p{font-size:.9rem;margin-top:1rem;max-width:300px}
+.foot-col h4{color:var(--cream);font-family:'Archivo';font-weight:800;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1rem}
+.foot-col a{display:block;font-size:.9rem;margin-bottom:.55rem;transition:.2s}
+.foot-col a:hover{color:var(--gold);transform:translateX(3px)}
+.foot-bot{border-top:1px solid rgba(247,239,221,.14);padding-top:1.5rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.8rem;font-size:.78rem;color:rgba(247,239,221,.45)}
+.foot-bot .hand{color:var(--gold);font-size:1.05rem}
+
+.float-cta{position:fixed;bottom:0;left:0;right:0;z-index:400;display:none;padding:.7rem;background:rgba(26,23,21,.95);backdrop-filter:blur(10px)}
+.float-cta .btn{width:100%;justify-content:center}
+
+@media(max-width:980px){
+  .hero .container,.about .container,.reserve .container,.visit .container{grid-template-columns:1fr}
+  .hero-visual{height:360px;order:-1}
+  .about-visual{height:340px;order:-1}
+  .visit-map{min-height:280px}
+  .sig-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  nav.links,.nav-status,.nav-right .btn{display:none}
+  .burger{display:flex}
+  nav.links.show{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:flex-start;background:var(--cream);padding:1.4rem;gap:1.1rem;box-shadow:var(--shadow-sm)}
+  .menu-grid{grid-template-columns:1fr;gap:0}
+  .sig-grid{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-auto-rows:150px}
+  .foot-grid{grid-template-columns:1fr;gap:1.6rem}
+  .float-cta{display:block}
+  body{padding-bottom:68px}
+  .hero-stats{gap:1.4rem}
+}
+
+/* ===== MG&CO Smart Menu (AR) ===== */
+.how{background:var(--cream)}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.step{background:var(--paper);border:2px solid var(--char);border-radius:8px;padding:2rem 1.6rem;box-shadow:6px 6px 0 var(--char);position:relative}
+.step .num{position:absolute;top:-1.2rem;right:1.2rem;width:54px;height:54px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-family:'Anton';font-size:1.4rem;border:2px solid var(--cream);box-shadow:var(--shadow-sm)}
+.step .ic{width:54px;height:54px;border-radius:10px;background:var(--char);color:var(--gold);display:grid;place-items:center;margin-bottom:1.1rem;font-size:1.4rem}
+.step h3{font-size:1.4rem;color:var(--char);margin-bottom:.5rem}
+.step p{color:var(--muted);font-size:.92rem}
+.ar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem}
+.ar-grid .dish{display:flex;flex-direction:column}
+.ar-grid .dish .ph{height:210px}
+.ar-grid .dish .body{display:flex;flex-direction:column;flex:1}
+.ar-grid .dish h3{padding-right:3.4rem}
+.ar-grid .dish .desc{color:var(--muted);font-size:.88rem;margin:.2rem 0 1.2rem;flex:1}
+.scanrow{display:flex;gap:.9rem;align-items:center;border-top:2px dotted var(--line);padding-top:1.1rem;margin-top:auto}
+.qr{width:80px;height:80px;flex:none;background:#fff;border:2px solid var(--char);border-radius:8px;padding:6px;display:grid;place-items:center}
+.qr img,.qr canvas{width:100%!important;height:100%!important;display:block}
+.scan-copy{flex:1}
+.scan-copy .q{font-family:'Caveat';font-weight:700;font-size:1.18rem;color:var(--red);line-height:1.05;margin-bottom:.5rem}
+.ar-cta{display:inline-flex;align-items:center;gap:.4rem;background:var(--char);color:var(--cream);font-family:'Archivo';font-weight:800;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;padding:.45rem .75rem;border-radius:4px}
+.ar-cta .adot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.scan-copy small{display:block;margin-top:.45rem;font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+@media(max-width:980px){.how-grid{grid-template-columns:1fr}.ar-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.ar-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a href="#top" class="brand">
+    <span class="mark">D</span>
+    <span><b>DINE'S</b><small>Restaurant &amp; Deli</small></span>
+  </a>
+  <nav class="links" id="navlinks">
+    <a href="#how">How It Works</a>
+    <a href="#signature">AR Menu</a>
+    <a href="#menu">Menu</a>
+    <a href="#about">Our Story</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#visit">Visit</a>
+  </nav>
+  <div class="nav-right">
+    <div class="nav-status"><span class="dot" id="navdot"></span><span id="navstatus">…</span></div>
+    <a href="#reserve" class="btn btn-red">Reserve a Table</a>
+  </div>
+  <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="container">
+    <div class="hero-copy" data-par="0.2">
+      <span class="hero-badge"><i>★</i> Oshawa · Durham Region's All-Day Breakfast</span>
+      <h1>Breakfast<br>all day.<br><span class="red">Grilled,</span> <span class="out">never fried.</span></h1>
+      <span class="sub">home of the famous Steak on a Kaiser</span>
+      <p class="lede">Three generations of regulars, bottomless coffee, and a griddle that never stops. Browse the full menu and book your table in seconds — no PDF, no phone tag.</p>
+      <div class="hero-actions">
+        <a href="#reserve" class="btn btn-red">Reserve a Table →</a>
+        <a href="#menu" class="btn btn-out" style="color:var(--cream)">See the Menu</a>
+      </div>
+      <div class="hero-stats">
+        <div class="s"><strong data-count="7">0</strong><span>Days a week</span></div>
+        <div class="s"><strong>7–3</strong><span>Open every day</span></div>
+        <div class="s"><strong data-count="0">0</strong><span>Deep fryers</span></div>
+      </div>
+    </div>
+    <div class="hero-visual" data-par="-0.25">
+      <span class="tape">Est. Oshawa</span>
+      <div class="hero-frame">
+        <div class="ph">
+          <div class="fb" data-label="All-Day Breakfast">__EGG__</div>
+          <img src="https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=1100&q=80" alt="All-day breakfast" loading="eager" onerror="imgFail(this)">
+        </div>
+      </div>
+      __SEAL__
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="ln"></span></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="strip">
+  <div class="strip-track" id="strip"></div>
+</div>
+
+<!-- HOW IT WORKS (Smart Menu / AR) -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="sec-head reveal" style="max-width:680px;margin-inline:auto;text-align:center">
+      <span class="eyebrow">The Smart Menu</span>
+      <h2>Scan. <em>See it in AR.</em> Savour.</h2>
+      <p style="margin-inline:auto">The eyes buy before the stomach does. Point your phone at any dish below and watch it appear, life-size, right on your table — no app to download.</p>
+    </div>
+    <div class="how-grid">
+      <div class="step reveal d1"><span class="num">1</span><div class="ic">&#9678;</div><h3>Point Your Camera</h3><p>Open your phone camera and point it at the QR code beside any dish.</p></div>
+      <div class="step reveal d2"><span class="num">2</span><div class="ic">&#9651;</div><h3>See It In AR</h3><p>The dish loads in 3D and drops onto your table — life-size, every angle.</p></div>
+      <div class="step reveal d3"><span class="num">3</span><div class="ic">&#9733;</div><h3>Order With Confidence</h3><p>You already saw it. No second-guessing, just the meal you actually want.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- AR FAVOURITES -->
+<section class="signature" id="signature">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="eyebrow">AR Favourites</span>
+      <h2>The plates worth <em>seeing first</em></h2>
+      <p>Our most-loved dishes — each with a photo and a scan-to-view-in-AR code. Hover a card, then scan.</p>
+    </div>
+    <div class="ar-grid" id="arGrid"></div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu-section" id="menu">
+  <div class="container">
+    <div class="menu-top">
+      <div class="sec-head reveal" style="margin-bottom:0">
+        <span class="eyebrow">No more PDF downloads</span>
+        <h2>The whole menu, <em>right here</em></h2>
+        <p>Browse everything on any device. Tap a category to jump in.</p>
+      </div>
+      <div class="menu-flag reveal">🔥&nbsp; <span>Grilled, <b>never</b> deep-fried — even the home fries</span></div>
+    </div>
+    <div class="tabs reveal" id="tabs"></div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="reveal">
+      <span class="eyebrow">Our Story</span>
+      <h2>A family table, open to <em>all of Durham</em></h2>
+      <p>Dine's Family Restaurant &amp; Deli has been Oshawa's go-to for honest, home-cooked food longer than most regulars can remember. Friendly faces, generous plates, and a pot of coffee that never runs dry.</p>
+      <p>We do it a little differently: we grill instead of deep-fry — yes, even the home fries — so even the most health-conscious guest leaves happy and full. That's the Dine's promise.</p>
+      <div class="about-stats">
+        <div><strong>7AM–3PM</strong><span>Open 7 days</span></div>
+        <div><strong>100%</strong><span>Grilled, not fried</span></div>
+        <div><strong>Durham</strong><span>A local institution</span></div>
+      </div>
+    </div>
+    <div class="about-visual reveal d2">
+      <div class="ph av1"><div class="fb" data-label="Our Dining Room">__COFFEE__</div><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80" alt="Inside Dine's" onerror="imgFail(this)"></div>
+      <div class="ph av2"><div class="fb" data-label="Fresh off the grill">__EGG__</div><img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=700&q=80" alt="Breakfast" onerror="imgFail(this)"></div>
+      <div class="av-badge"><b>OSHAWA'S</b><span>own since day one</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVE -->
+<section class="reserve" id="reserve">
+  <div class="container">
+    <div class="reserve-copy reveal">
+      <span class="eyebrow">Book in 20 seconds</span>
+      <h2>Reserve your table <em>online</em></h2>
+      <p>No more phone tag during the breakfast rush. Pick a time, tell us how many, and you're set — with an instant confirmation.</p>
+      <div class="frow"><div class="ic">📅</div><div><b>Real-time availability</b><span>See open tables for any day you choose</span></div></div>
+      <div class="frow"><div class="ic">⚡</div><div><b>Instant confirmation</b><span>A booking code on the spot — no waiting on a callback</span></div></div>
+      <div class="frow"><div class="ic">🔔</div><div><b>Reminder texts</b><span>A friendly SMS so the table never sits empty</span></div></div>
+    </div>
+    <div class="ticket reveal d2">
+      <div class="ticket-head"><h3>Find a Table</h3><span class="chip">Open Daily 7–3</span></div>
+      <div class="ticket-body">
+        <div id="bookingForm">
+          <p class="sub">Walk-ins always welcome — a reservation guarantees your spot.</p>
+          <div class="field"><label for="bname">Your name</label><input type="text" id="bname" placeholder="e.g. Sarah Thompson"></div>
+          <div class="field-row">
+            <div class="field"><label for="bdate">Date</label><input type="date" id="bdate"></div>
+            <div class="field"><label for="btime">Time</label><select id="btime">
+              <option>7:30 AM</option><option>8:30 AM</option><option selected>9:30 AM</option><option>11:00 AM</option><option>12:30 PM</option><option>1:30 PM</option><option>2:30 PM</option>
+            </select></div>
+          </div>
+          <div class="field"><label>Party size</label><div class="party-pills" id="party">
+            <button data-n="1">1</button><button data-n="2" class="sel">2</button><button data-n="3">3</button><button data-n="4">4</button><button data-n="5">5</button><button data-n="6">6+</button>
+          </div></div>
+          <div class="field"><label for="bphone">Mobile (for confirmation)</label><input type="tel" id="bphone" placeholder="(905) 000-0000"></div>
+          <button class="btn btn-red" id="bookBtn">Confirm Reservation →</button>
+        </div>
+        <div id="bookingDone" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="container">
+    <div class="sec-head reveal"><span class="eyebrow">Straight off the grill</span><h2>A taste of <em>Dine's</em></h2></div>
+    <div class="gallery-grid">
+      <div class="ph g-tall reveal"><div class="fb" data-label="Breakfast">__EGG__</div><img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=700&q=80" alt="" onerror="imgFail(this)"></div>
+      <div class="ph g-wide reveal d1"><div class="fb" data-label="Pancakes">__PANCAKE__</div><img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=900&q=80" alt="" onerror="imgFail(this)"></div>
+      <div class="ph reveal d2"><div class="fb" data-label="Coffee">__COFFEE__</div><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80" alt="" onerror="imgFail(this)"></div>
+      <div class="ph reveal d1"><div class="fb" data-label="Lunch">__SAND__</div><img src="https://images.unsplash.com/photo-1539252554453-80ab65ce3586?auto=format&fit=crop&w=600&q=80" alt="" onerror="imgFail(this)"></div>
+      <div class="ph g-wide reveal d2"><div class="fb" data-label="Benedict">__EGG__</div><img src="https://images.unsplash.com/photo-1608039829572-78524f79c4c7?auto=format&fit=crop&w=900&q=80" alt="" onerror="imgFail(this)"></div>
+      <div class="ph reveal d3"><div class="fb" data-label="Specials">__STEAK__</div><img src="https://images.unsplash.com/photo-1432139509613-5c4255815697?auto=format&fit=crop&w=600&q=80" alt="" onerror="imgFail(this)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT -->
+<section class="visit" id="visit">
+  <div class="container">
+    <div class="visit-info">
+      <span class="eyebrow">Come Say Hi</span>
+      <h2>Find us in Oshawa</h2>
+      <div class="vline"><span class="ic">📍</span><div><b>Address</b><span>400 King St. West, Oshawa, Ontario, Canada</span></div></div>
+      <div class="vline"><span class="ic">🕖</span><div><b>Hours</b><span>Open 7 days a week · 7:00 AM – 3:00 PM</span><br><span class="hnow"><span class="dot" id="visitDot"></span><span id="visitStatus">…</span></span></div></div>
+      <div class="vline"><span class="ic">📞</span><div><b>Call us</b><a href="tel:9057235951">905-723-5951</a></div></div>
+      <div class="vline"><span class="ic">🚗</span><div><b>Dine-in &amp; takeout</b><span>Plenty of parking · Family &amp; group friendly</span></div></div>
+      <div style="margin-top:1.6rem;display:flex;gap:.7rem;flex-wrap:wrap">
+        <a href="#reserve" class="btn btn-red">Reserve a Table</a>
+        <a href="tel:9057235951" class="btn btn-out" style="color:var(--cream)">Call to Order</a>
+      </div>
+    </div>
+    <div class="visit-map"><iframe loading="lazy" src="https://www.google.com/maps?q=400+King+St+West+Oshawa+Ontario+Canada&output=embed" title="Dine's location"></iframe></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="brand"><span class="mark">D</span><span><b>DINE'S</b><small>Restaurant &amp; Deli</small></span></a>
+        <p>Oshawa's home of all-day breakfast and the famous Steak on a Kaiser. Grilled, never deep-fried — since the good old days.</p>
+      </div>
+      <div class="foot-col"><h4>Explore</h4><a href="#signature">AR Menu</a><a href="#menu">Full Menu</a><a href="#about">Our Story</a><a href="#reserve">Reserve</a></div>
+      <div class="foot-col"><h4>Visit</h4><a href="https://www.google.com/maps?q=400+King+St+West+Oshawa+Ontario" target="_blank" rel="noopener">400 King St. W, Oshawa</a><a href="tel:9057235951">905-723-5951</a><a href="#visit">Hours &amp; Directions</a></div>
+    </div>
+    <div class="foot-bot"><span>© 2026 Dine's Family Restaurant &amp; Deli. All rights reserved.</span><span class="hand">Built by MG&CO Technologies · Smart Menu enabled</span></div>
+  </div>
+</footer>
+
+<div class="float-cta"><a href="#reserve" class="btn btn-red">Reserve a Table →</a></div>
+
+<script>
+/* ---------- inline SVG food illustrations (guaranteed render) ---------- */
+const R='%23C8102E';
+const SVG={
+ EGG:`<svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg"><ellipse cx="60" cy="50" rx="52" ry="32" fill="none" stroke="#C8102E" stroke-width="3"/><circle cx="60" cy="48" r="16" fill="#E8B84B"/><path d="M30 36q-6-14 8-18" stroke="#C8102E" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M44 30q-3-10 7-13" stroke="#C8102E" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+ COFFEE:`<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><path d="M28 44h54v22a18 18 0 0 1-18 18H46a18 18 0 0 1-18-18z" fill="none" stroke="#C8102E" stroke-width="3"/><path d="M82 50h10a10 10 0 0 1 0 20H82" fill="none" stroke="#C8102E" stroke-width="3"/><path d="M44 30q-4-8 2-14M58 30q-4-8 2-14M72 30q-4-8 2-14" stroke="#E8B84B" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+ SAND:`<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><path d="M18 34q42-22 84 0z" fill="#E8B84B" stroke="#C8102E" stroke-width="3" stroke-linejoin="round"/><path d="M20 44h80M22 56h76M20 68h80" stroke="#C8102E" stroke-width="3" stroke-linecap="round"/><path d="M18 76q42 16 84 0" fill="none" stroke="#C8102E" stroke-width="3"/></svg>`,
+ PANCAKE:`<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><ellipse cx="60" cy="40" rx="40" ry="11" fill="none" stroke="#C8102E" stroke-width="3"/><ellipse cx="60" cy="54" rx="40" ry="11" fill="none" stroke="#C8102E" stroke-width="3"/><ellipse cx="60" cy="68" rx="40" ry="11" fill="none" stroke="#C8102E" stroke-width="3"/><path d="M60 30q8-4 4 8" fill="#E8B84B" stroke="#E8B84B" stroke-width="3"/></svg>`,
+ STEAK:`<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><path d="M34 36q30-16 52 4 14 13-2 28-26 22-46 2-14-22-4-34z" fill="none" stroke="#C8102E" stroke-width="3"/><circle cx="60" cy="50" r="9" fill="#E8B84B"/></svg>`
+};
+function fbHTML(k){return SVG[k]||SVG.EGG;}
+// inject illustrations into placeholders
+document.querySelectorAll('.fb').forEach(fb=>{/* handled below via markers */});
+
+/* replace markers */
+['EGG','COFFEE','SAND','PANCAKE','STEAK'].forEach(k=>{});
+document.querySelectorAll('.fb').forEach(el=>{
+  const txt=el.innerHTML.trim();
+});
+/* We placed __KEY__ markers; swap them now */
+function hydrateFB(){
+  document.querySelectorAll('.fb').forEach(el=>{
+    let m=el.textContent.trim();
+    m=m.replace(/__|_/g,'');
+    if(SVG[m]) el.innerHTML=SVG[m];
+  });
+}
+hydrateFB();
+
+/* seal marker */
+const sealSVG=`<svg class="seal" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs><path id="circ" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs>
+<circle cx="100" cy="100" r="92" fill="#C8102E"/><circle cx="100" cy="100" r="92" fill="none" stroke="#1A1715" stroke-width="3"/>
+<circle cx="100" cy="100" r="60" fill="#F7EFDD"/>
+<text font-family="Anton, Impact, sans-serif" font-size="15.5" fill="#F7EFDD" letter-spacing="2"><textPath href="#circ" startOffset="0%">DINE'S · OSHAWA · ALL-DAY BREAKFAST · GRILLED NOT FRIED · </textPath></text>
+<g transform="translate(100,100)"><ellipse cx="0" cy="4" rx="30" ry="20" fill="none" stroke="#C8102E" stroke-width="3"/><circle cx="0" cy="2" r="11" fill="#E8B84B"/></g></svg>`;
+document.querySelectorAll('.hero-visual').forEach(h=>{h.insertAdjacentHTML('beforeend','');});
+const hv=document.querySelector('.hero-visual');
+if(hv){const wrap=document.createElement('div');wrap.innerHTML=sealSVG;hv.appendChild(wrap.firstChild);}
+/* remove leftover __SEAL__ text node if present */
+document.querySelectorAll('.hero-visual').forEach(h=>{h.childNodes.forEach(n=>{if(n.nodeType===3&&n.textContent.includes('SEAL'))n.remove();});});
+
+/* image failure -> show designed fallback */
+function imgFail(img){img.style.display='none';}
+
+/* ---------- MENU ---------- */
+const MENU={
+ "All-Day Breakfast":[
+  {n:"The Dine's Classic",d:"Two eggs any style, bacon/sausage/peameal, grilled home fries & toast",p:"12.95",b:["sig"]},
+  {n:"Steak & Eggs",d:"Grilled sirloin, two eggs, home fries & toast",p:"18.95",b:["grill"]},
+  {n:"Buttermilk Pancakes",d:"Stack of three with pure maple syrup",p:"10.95"},
+  {n:"Eggs Benedict",d:"Poached eggs, peameal bacon, hollandaise, home fries",p:"14.95"},
+  {n:"Western Omelette",d:"Ham, peppers, onion & cheddar, home fries & toast",p:"13.95"},
+  {n:"Veggie Egg-White Scramble",d:"Spinach, tomato & mushroom, grilled light",p:"12.95",b:["veg"]},
+  {n:"Belgian Waffle",d:"Fresh berries & whipped cream",p:"11.95"},
+  {n:"Breakfast Sandwich",d:"Egg, cheddar & bacon on a fresh kaiser",p:"7.95"},
+ ],
+ "Sandwiches & Deli":[
+  {n:"Steak on a Kaiser",d:"Char-grilled sirloin & caramelized onions — our signature",p:"14.95",b:["sig","grill"]},
+  {n:"Triple Decker Turkey Club",d:"Roast turkey, bacon, lettuce & tomato, three high",p:"13.95"},
+  {n:"Montreal Smoked Meat",d:"Piled high on rye with mustard",p:"13.95"},
+  {n:"Classic Reuben",d:"Smoked beef, sauerkraut, swiss on grilled rye",p:"13.50"},
+  {n:"Grilled Chicken Club",d:"Grilled breast, bacon, lettuce & tomato",p:"13.50",b:["grill"]},
+  {n:"Hot Hamburg Platter",d:"Open-faced with gravy & home fries",p:"13.95"},
+  {n:"Tuna Melt",d:"House tuna & melted cheddar on grilled sourdough",p:"11.50"},
+  {n:"Classic B.L.T.",d:"Crisp bacon, lettuce & tomato on toast",p:"9.95"},
+ ],
+ "Lunch & Dinner":[
+  {n:"Hot Turkey Dinner",d:"Sliced roast turkey, gravy, mashed potato & veg",p:"15.95"},
+  {n:"Fish & Chips",d:"Haddock — grilled or fried — with fries & slaw",p:"15.95"},
+  {n:"Chicken Souvlaki",d:"Grilled skewers, rice, Greek salad & pita",p:"16.95",b:["grill"]},
+  {n:"Grilled Atlantic Salmon",d:"Seasonal vegetables & rice",p:"18.95",b:["grill"]},
+  {n:"Homemade Meatloaf",d:"Mashed potato, gravy & vegetables",p:"14.95"},
+  {n:"Liver & Onions",d:"Grilled calf's liver with bacon & onions",p:"14.95",b:["grill"]},
+  {n:"Soup & Sandwich Combo",d:"Daily homemade soup with half a deli sandwich",p:"11.95"},
+ ],
+ "Sides":[
+  {n:"Grilled Home Fries",d:"Our pride — grilled golden, never deep-fried",p:"4.50",b:["grill"]},
+  {n:"Cup of Daily Soup",d:"Made fresh every morning",p:"4.95"},
+  {n:"Side Garden Salad",d:"Mixed greens & house dressing",p:"5.50",b:["veg"]},
+  {n:"Peameal Bacon",d:"Canadian back bacon, grilled",p:"4.50"},
+  {n:"Fresh Fruit Cup",d:"Seasonal cut fruit",p:"5.50",b:["veg"]},
+ ],
+ "Drinks":[
+  {n:"Bottomless Coffee",d:"Freshly brewed, refilled all morning",p:"2.95"},
+  {n:"Fresh Orange Juice",d:"Squeezed daily",p:"3.95",b:["veg"]},
+  {n:"Specialty Tea",d:"A range of loose-leaf blends",p:"2.95"},
+  {n:"Old-Fashioned Milkshake",d:"Chocolate, vanilla or strawberry",p:"5.95"},
+  {n:"Soft Drinks",d:"Free refills on fountain pop",p:"2.50"},
+ ],
+};
+const BADGE={sig:{c:"b-sig",t:"Signature"},veg:{c:"b-veg",t:"Veggie"},grill:{c:"b-grill",t:"Grilled"}};
+const tabsEl=document.getElementById('tabs'),gridEl=document.getElementById('menuGrid'),cats=Object.keys(MENU);
+cats.forEach((c,i)=>{const b=document.createElement('button');b.className='tab'+(i===0?' active':'');b.textContent=c;
+ b.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');render(c)};tabsEl.appendChild(b);});
+function render(cat){gridEl.innerHTML='';MENU[cat].forEach((it,i)=>{
+ const badges=(it.b||[]).map(k=>`<span class="m-badge ${BADGE[k].c}">${BADGE[k].t}</span>`).join('');
+ const el=document.createElement('div');el.className='m-item';el.style.animationDelay=(i*0.04)+'s';
+ el.innerHTML=`<div class="m-main"><div class="m-title"><h4>${it.n}</h4>${badges}</div><p class="m-desc">${it.d}</p></div><span class="m-dots"></span><span class="m-price">$${it.p}</span>`;
+ gridEl.appendChild(el);});}
+render(cats[0]);
+
+/* marquee */
+const items=["Steak on a Kaiser","All-Day Breakfast","Grilled Home Fries","Triple Decker Clubs","Daily Specials","Bottomless Coffee"];
+document.getElementById('strip').innerHTML=(items.concat(items)).map(t=>`<span>${t}</span>`).join('');
+
+/* nav scroll + progress */
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>{
+ nav.classList.toggle('scrolled',scrollY>40);
+ const h=document.documentElement;
+ document.getElementById('progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+const burger=document.getElementById('burger'),navlinks=document.getElementById('navlinks');
+burger.onclick=()=>navlinks.classList.toggle('show');
+navlinks.querySelectorAll('a').forEach(a=>a.onclick=()=>navlinks.classList.remove('show'));
+
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.13});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* count up */
+function runCount(el){const t=+el.dataset.count;let s=null;const dur=900;
+ function step(ts){if(!s)s=ts;const p=Math.min((ts-s)/dur,1);el.textContent=Math.round(p*t);if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+const cio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){runCount(e.target);cio.unobserve(e.target)}}),{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+
+/* hero parallax */
+addEventListener('scroll',()=>{const y=scrollY;document.querySelectorAll('[data-par]').forEach(el=>{el.style.transform=`translateY(${y*parseFloat(el.dataset.par)}px)`;});});
+
+/* magnetic buttons */
+document.querySelectorAll('.btn').forEach(b=>{
+ b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)/6}px,${(e.clientY-r.top-r.height/2)/6}px)`;});
+ b.addEventListener('mouseleave',()=>b.style.transform='');
+});
+
+/* open/closed status 7-15 */
+function updateStatus(){const now=new Date();const h=now.getHours()+now.getMinutes()/60;const open=h>=7&&h<15;
+ [['navdot','navstatus'],['visitDot','visitStatus']].forEach(([d,s])=>{const dot=document.getElementById(d),st=document.getElementById(s);
+  if(dot){dot.classList.remove('open','closed');dot.classList.add(open?'open':'closed');}if(st)st.textContent=open?'Open now · til 3 PM':'Closed · opens 7 AM';});}
+updateStatus();setInterval(updateStatus,60000);
+
+/* booking */
+let partyN=2;const party=document.getElementById('party');
+party.querySelectorAll('button').forEach(b=>b.onclick=()=>{party.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');partyN=b.dataset.n;});
+const bdate=document.getElementById('bdate');const today=new Date().toISOString().split('T')[0];bdate.value=today;bdate.min=today;
+document.getElementById('bookBtn').onclick=()=>{
+ const name=document.getElementById('bname').value.trim()||'Guest';
+ const date=document.getElementById('bdate').value,time=document.getElementById('btime').value,phone=document.getElementById('bphone').value.trim();
+ const niceDate=new Date(date+'T12:00').toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'});
+ const code='DIN-'+Math.random().toString(36).slice(2,6).toUpperCase();
+ document.getElementById('bookingForm').style.display='none';
+ const done=document.getElementById('bookingDone');done.style.display='block';
+ done.innerHTML=`<div class="confirm"><div class="check">✓</div><h3>You're booked, ${name.split(' ')[0]}!</h3>
+  <p>We can't wait to feed you. A confirmation text${phone?' is on its way to '+phone:''} 🎉</p>
+  <div class="receipt">
+   <div class="rrow"><span>Reservation</span><span class="code">${code}</span></div>
+   <div class="rrow"><span>Date</span><span>${niceDate}</span></div>
+   <div class="rrow"><span>Time</span><span>${time}</span></div>
+   <div class="rrow"><span>Party</span><span>${partyN} ${partyN==1?'guest':'guests'}</span></div>
+   <div class="rrow"><span>Where</span><span>400 King St. W, Oshawa</span></div>
+  </div>
+  <button class="btn btn-out" style="width:100%;justify-content:center;color:var(--char);margin-top:1rem" onclick="location.reload()">Make another booking</button></div>`;
+ done.scrollIntoView({behavior:'smooth',block:'center'});
+};
+
+
+/* ===== MG&CO Smart Menu (AR) add-on ===== */
+SVG.FISH=`<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><path d="M20 50q26-26 60 0-34 26-60 0z" fill="none" stroke="#C8102E" stroke-width="3"/><path d="M80 50l22-16v32z" fill="none" stroke="#C8102E" stroke-width="3" stroke-linejoin="round"/><circle cx="36" cy="46" r="4" fill="#E8B84B"/></svg>`;
+SVG.PASTA=`<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg"><path d="M20 60q40 24 80 0" fill="none" stroke="#C8102E" stroke-width="3"/><path d="M28 56q6-26 16 0M44 56q6-30 16 0M60 56q6-30 16 0M76 56q6-26 14 0" fill="none" stroke="#E8B84B" stroke-width="3" stroke-linecap="round"/><circle cx="44" cy="40" r="4" fill="#C8102E"/><circle cx="72" cy="38" r="4" fill="#C8102E"/></svg>`;
+const AR_BASE="https://dines-ar.app/d/";
+const AR_DISHES=[
+ {n:"Steak on a Kaiser",d:"Char-grilled steak, cheese & tomato sauce on a fresh kaiser. The one we're famous for.",p:"13.99",tag:"Our Famous",img:"1553979459-d2229ba7433b",fb:"SAND",slug:"steak-on-a-kaiser"},
+ {n:"Smoked Meat Sandwich",d:"Heaps of house smoked meat with coleslaw and a dill pickle. The deli classic.",p:"13.99",tag:"Deli Famous",img:"1528735602780-2552fd46c7af",fb:"SAND",slug:"smoked-meat-sandwich"},
+ {n:"Classic Reuben",d:"Smoked meat on grilled rye with sauerkraut and melted Swiss cheese.",p:"14.99",tag:"Griddle",img:"1509722747041-616f39b57569",fb:"SAND",slug:"reuben-sandwich"},
+ {n:"Dines Grand Slam",d:"3 eggs, home fries, bacon, ham & sausage with baked beans and toast.",p:"16.99",tag:"Big Breakfast",img:"1533089860892-a7c6f0a88666",fb:"EGG",slug:"dines-grand-slam"},
+ {n:"Eggs Benedict",d:"English muffin, 2 poached eggs, ham and hollandaise, with home fries.",p:"16.99",tag:"All-Day",img:"1608039829572-78524f79c4c7",fb:"EGG",slug:"eggs-benedict"},
+ {n:"Triple Decker Club",d:"Classic white turkey triple decker with bacon, lettuce & tomato, fries and slaw.",p:"17.99",tag:"Stacked",img:"1567234669003-dce7a7a88821",fb:"SAND",slug:"triple-decker-club"},
+ {n:"Canadian Burger",d:"8oz char-broiled all-beef burger loaded with cheddar and peameal bacon.",p:"17.99",tag:"Char-Broiled",img:"1568901346375-23c9450c58cd",fb:"STEAK",slug:"canadian-burger"},
+ {n:"Fish & Chips",d:"Crispy battered fillet with fries, coleslaw, tartar sauce and a lemon wedge.",p:"17.99",tag:"From the Sea",img:"1579208030886-b937da0925dc",fb:"FISH",slug:"fish-and-chips"},
+ {n:"Chicken Souvlaki",d:"Served with Greek salad, rice, your choice of potato and house tzatziki.",p:"18.99",tag:"Greek",img:"1599487488170-d11ec9c172f0",fb:"STEAK",slug:"chicken-souvlaki"},
+ {n:"Blueberry Pancakes",d:"Fluffy stack with real blueberries and maple syrup. Served all day.",p:"13.99",tag:"Sweet",img:"1567620905732-2d1ec7ab7445",fb:"PANCAKE",slug:"blueberry-pancakes"},
+ {n:"Spaghetti & Meat Sauce",d:"A taste of Italy with our own meat sauce, garden salad and garlic bread.",p:"17.99",tag:"Comfort",img:"1622973536968-3ead9e780960",fb:"PASTA",slug:"spaghetti-meat-sauce"},
+ {n:"Chicken Parmesan",d:"Tender chicken under mozzarella and our tomato sauce, with spaghetti.",p:"19.99",tag:"Entree",img:"1632778149955-e80f8ceca2e8",fb:"STEAK",slug:"chicken-parmesan"}
+];
+(function(){
+ const arGrid=document.getElementById('arGrid');
+ if(!arGrid) return;
+ AR_DISHES.forEach((it,i)=>{
+   const d=it.p.split('.');
+   const card=document.createElement('article');
+   card.className='dish reveal '+('d'+((i%3)+1));
+   card.innerHTML=`
+     <span class="stamp">${it.tag}</span>
+     <div class="ph"><div class="fb" data-label="${it.n}">__${it.fb}__</div><img src="https://images.unsplash.com/photo-${it.img}?auto=format&fit=crop&w=800&q=80" alt="${it.n}" loading="lazy" onerror="imgFail(this)"></div>
+     <div class="body">
+       <span class="price">$${d[0]}<sup>${d[1]||'00'}</sup></span>
+       <h3>${it.n}</h3>
+       <p class="desc">${it.d}</p>
+       <div class="scanrow">
+         <div class="qr" id="arqr-${i}"></div>
+         <div class="scan-copy">
+           <div class="q">Wanna see it<br>in real life?</div>
+           <span class="ar-cta"><span class="adot"></span> Scan to View in AR</span>
+           <small>Point your camera · ${it.slug}</small>
+         </div>
+       </div>
+     </div>`;
+   arGrid.appendChild(card);
+   if(typeof io!=='undefined') io.observe(card);
+ });
+ hydrateFB();
+ if(window.QRCode){AR_DISHES.forEach((it,i)=>{new QRCode(document.getElementById('arqr-'+i),{text:AR_BASE+it.slug,width:150,height:150,colorDark:'#1A1715',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});});}
+})();
+
+</script>
+</body>
+</html>
