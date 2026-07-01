@@ -373,7 +373,7 @@ footer p{font-size:.9rem;margin-top:1rem;max-width:300px}
       </div>
       <div class="hero-stats">
         <div class="s"><strong data-count="7">0</strong><span>Days a week</span></div>
-        <div class="s"><strong>7–3</strong><span>Open every day</span></div>
+        <div class="s"><strong>7–8</strong><span>Open every day</span></div>
         <div class="s"><strong data-count="0">0</strong><span>Deep fryers</span></div>
       </div>
     </div>
@@ -449,7 +449,7 @@ footer p{font-size:.9rem;margin-top:1rem;max-width:300px}
       <p>Dine's Family Restaurant &amp; Deli has been Oshawa's go-to for honest, home-cooked food longer than most regulars can remember. Friendly faces, generous plates, and a pot of coffee that never runs dry.</p>
       <p>We do it a little differently: we grill instead of deep-fry — yes, even the home fries — so even the most health-conscious guest leaves happy and full. That's the Dine's promise.</p>
       <div class="about-stats">
-        <div><strong>7AM–3PM</strong><span>Open 7 days</span></div>
+        <div><strong>7AM–8PM</strong><span>Open 7 days</span></div>
         <div><strong>100%</strong><span>Grilled, not fried</span></div>
         <div><strong>Durham</strong><span>A local institution</span></div>
       </div>
@@ -474,7 +474,7 @@ footer p{font-size:.9rem;margin-top:1rem;max-width:300px}
       <div class="frow"><div class="ic">🔔</div><div><b>Reminder texts</b><span>A friendly SMS so the table never sits empty</span></div></div>
     </div>
     <div class="ticket reveal d2">
-      <div class="ticket-head"><h3>Find a Table</h3><span class="chip">Open Daily 7–3</span></div>
+      <div class="ticket-head"><h3>Find a Table</h3><span class="chip">Open Daily 7–8</span></div>
       <div class="ticket-body">
         <div id="bookingForm">
           <p class="sub">Walk-ins always welcome — a reservation guarantees your spot.</p>
@@ -519,7 +519,7 @@ footer p{font-size:.9rem;margin-top:1rem;max-width:300px}
       <span class="eyebrow">Come Say Hi</span>
       <h2>Find us in Oshawa</h2>
       <div class="vline"><span class="ic">📍</span><div><b>Address</b><span>400 King St. West, Oshawa, Ontario, Canada</span></div></div>
-      <div class="vline"><span class="ic">🕖</span><div><b>Hours</b><span>Open 7 days a week · 7:00 AM – 3:00 PM</span><br><span class="hnow"><span class="dot" id="visitDot"></span><span id="visitStatus">…</span></span></div></div>
+      <div class="vline"><span class="ic">🕖</span><div><b>Hours</b><span>Open 7 days a week · 7:00 AM – 8:00 PM</span><br><span class="hnow"><span class="dot" id="visitDot"></span><span id="visitStatus">…</span></span></div></div>
       <div class="vline"><span class="ic">📞</span><div><b>Call us</b><a href="tel:9057235951">905-723-5951</a></div></div>
       <div class="vline"><span class="ic">🚗</span><div><b>Dine-in &amp; takeout</b><span>Plenty of parking · Family &amp; group friendly</span></div></div>
       <div style="margin-top:1.6rem;display:flex;gap:.7rem;flex-wrap:wrap">
@@ -684,10 +684,10 @@ document.querySelectorAll('.btn').forEach(b=>{
  b.addEventListener('mouseleave',()=>b.style.transform='');
 });
 
-/* open/closed status 7-15 */
-function updateStatus(){const now=new Date();const h=now.getHours()+now.getMinutes()/60;const open=h>=7&&h<15;
+/* open/closed status 7-20 */
+function updateStatus(){const now=new Date();const h=now.getHours()+now.getMinutes()/60;const open=h>=7&&h<20;
  [['navdot','navstatus'],['visitDot','visitStatus']].forEach(([d,s])=>{const dot=document.getElementById(d),st=document.getElementById(s);
-  if(dot){dot.classList.remove('open','closed');dot.classList.add(open?'open':'closed');}if(st)st.textContent=open?'Open now · til 3 PM':'Closed · opens 7 AM';});}
+  if(dot){dot.classList.remove('open','closed');dot.classList.add(open?'open':'closed');}if(st)st.textContent=open?'Open now · til 8 PM':'Closed · opens 7 AM';});}
 updateStatus();setInterval(updateStatus,60000);
 
 /* booking */
